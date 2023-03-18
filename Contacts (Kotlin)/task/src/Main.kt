@@ -9,9 +9,9 @@ fun main() {
         when (action) {
             "add" -> contacts.addContact()
             "remove" -> contacts.removeContact()
-            "edit" -> editContact(contacts)
-            "count" -> countContacts(contacts)
-            "list" -> listContacts(contacts)
+            "edit" -> contacts.editContact()
+            "count" -> contacts.countContacts()
+            "list" -> contacts.listContacts()
             "exit" -> {
                 println("Bye!")
                 return

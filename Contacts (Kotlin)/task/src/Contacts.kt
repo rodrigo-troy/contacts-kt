@@ -24,4 +24,20 @@ class Contacts {
         println("A Phone Book with a single record created!")
 
     }
+
+    fun removeContact() {
+
+    }
+
+    fun editContact() {
+
+    }
+
+    fun countContacts() {
+
+    }
+
+    fun listContacts() {
+
+    }
 }
