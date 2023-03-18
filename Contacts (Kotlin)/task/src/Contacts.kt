@@ -10,11 +10,18 @@ $ Project: Contacts (Kotlin)
 class Contacts {
     private val contacts = mutableListOf<Contact>()
 
-    fun addContact(contact: Contact) {
-        contacts.add(contact)
-    }
+    fun addContact() {
+        println("Enter the name of the person:")
+        val name = readln()
+        println("Enter the surname of the person:")
+        val surname = readln()
+        println("Enter the number:")
+        val phoneNumber = readln()
 
-    fun removeContact(contact: Contact) {
-        contacts.remove(contact)
+        contacts.add(Contact(name, surname, phoneNumber))
+
+        println("A record created!")
+        println("A Phone Book with a single record created!")
+
     }
 }

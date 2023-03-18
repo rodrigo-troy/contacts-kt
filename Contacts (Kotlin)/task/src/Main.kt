@@ -3,16 +3,23 @@ package contacts
 fun main() {
     val contacts = Contacts()
 
-    println("Enter the name of the person:")
-    val name = readln()
-    println("Enter the surname of the person:")
-    val surname = readln()
-    println("Enter the number:")
-    val phoneNumber = readln()
+    while (true) {
+        println("Enter action (add, remove, edit, count, list, exit):")
+        val action = readln()
+        when (action) {
+            "add" -> contacts.addContact()
+            "remove" -> contacts.removeContact()
+            "edit" -> editContact(contacts)
+            "count" -> countContacts(contacts)
+            "list" -> listContacts(contacts)
+            "exit" -> {
+                println("Bye!")
+                return
+            }
 
-    val contact = Contact(name, surname, phoneNumber)
-    contacts.addContact(contact)
+            else -> println("Unknown action")
+        }
+    }
 
-    println("A record created!")
-    println("A Phone Book with a single record created!")
+
 }
