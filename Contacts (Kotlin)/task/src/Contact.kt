@@ -1,8 +1,8 @@
 package contacts
 
 data class Contact(
-    val name: String,
-    val surname: String,
+    private var name: String,
+    private var surname: String,
     private var phoneNumber: String = ""
 ) {
     override fun toString(): String {
@@ -15,6 +15,16 @@ data class Contact(
 
     fun getFullName(): String {
         return "$name $surname"
+    }
+
+    fun setName(newName: String) {
+        name = newName
+    }
+
+    fun setSurname(newSurname: String) {
+        surname = newSurname.ifEmpty {
+            "[no number]"
+        }
     }
 
     fun getShortName(): String {

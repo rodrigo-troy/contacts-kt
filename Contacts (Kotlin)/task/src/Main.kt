@@ -5,8 +5,7 @@ fun main() {
 
     while (true) {
         println("Enter action (add, remove, edit, count, list, exit):")
-        val action = readln()
-        when (action) {
+        when (readln().trim()) {
             "add" -> contacts.addContact()
             "remove" -> contacts.removeContact()
             "edit" -> contacts.editContact()
