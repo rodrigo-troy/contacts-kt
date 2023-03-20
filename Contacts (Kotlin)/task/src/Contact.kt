@@ -1,12 +1,21 @@
 package contacts
 
-data class Contact(
-    private var name: String,
-    private var surname: String,
-    private var phoneNumber: String = ""
+open class Contact(
+    protected var name: String,
+    protected var surname: String,
+    protected var phoneNumber: String = "",
+    private val type: ContactType = ContactType.UNKNOWN
 ) {
     override fun toString(): String {
         return "$name $phoneNumber"
+    }
+
+    fun isPerson(): Boolean {
+        return type == ContactType.PERSON
+    }
+
+    fun getType(): ContactType {
+        return type
     }
 
     fun getPhoneNumber(): String {
