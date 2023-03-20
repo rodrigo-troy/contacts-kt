@@ -13,6 +13,8 @@ class Contacts {
         "\\+?((\\([0-9A-Za-z]+\\)|[0-9A-Za-z]+)|([0-9A-Za-z]+[ -]\\([0-9A-Za-z]{2,}\\))|[0-9A-Za-z]+[ -][0-9A-Za-z]{2,})([ -][0-9A-Za-z]{2,}[ -]?)*".toRegex()
 
     fun addContact() {
+        println("Enter the typp:")
+        val type = readln()
         println("Enter the name:")
         val name = readln()
         println("Enter the surname:")

@@ -1,9 +1,9 @@
 package contacts
 
 open class Contact(
-    protected var name: String,
-    protected var surname: String,
-    protected var phoneNumber: String = "",
+    private var name: String,
+    private var surname: String,
+    private var phoneNumber: String = "",
     private val type: ContactType = ContactType.UNKNOWN
 ) {
     override fun toString(): String {

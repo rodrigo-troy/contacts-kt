@@ -9,5 +9,14 @@ $ Project: Contacts (Kotlin)
  */
 class Organization(
     name: String,
-    phoneNumber: String = ""
-) : Contact(name, "", phoneNumber, ContactType.ORGANIZATION)
+    phoneNumber: String = "",
+    private var address: String = ""
+) : Contact(name, "", phoneNumber, ContactType.ORGANIZATION) {
+    fun getAddress(): String {
+        return address
+    }
+
+    fun setAddress(newAddress: String) {
+        address = newAddress
+    }
+}
