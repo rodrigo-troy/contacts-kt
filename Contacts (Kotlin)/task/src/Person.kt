@@ -12,7 +12,7 @@ class Person(
     phoneNumber: String = "",
     private var surname: String = "",
     private var birthDate: String = "",
-    private var genre: Genre = Genre.UNKNOWN
+    private var gender: Gender = Gender.UNKNOWN
 ) : Contact(name, phoneNumber, ContactType.PERSON) {
 
     fun setSurname(newSurname: String) {
@@ -33,19 +33,19 @@ class Person(
         birthDate = newBirthDate
     }
 
-    fun getGenre(): Genre {
-        return genre
+    fun getGenre(): Gender {
+        return gender
     }
 
-    fun setGenre(newGenre: Genre) {
-        genre = newGenre
+    fun setGenre(newGender: Gender) {
+        gender = newGender
     }
 
     override fun toString(): String {
         return "Name: ${getName()}\n" +
                 "Surname: $surname\n" +
                 "Birth date: $birthDate\n" +
-                "Genre: ${genre.value}\n" +
+                "Gender: ${gender.value}\n" +
                 "Number: ${getPhoneNumber()}\n" +
                 "Time created: ${getCreationDate()}\n" +
                 "Time last edit: ${getEditDate()}"

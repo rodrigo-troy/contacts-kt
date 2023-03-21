@@ -64,12 +64,12 @@ class Contacts {
         }.ifEmpty { "[no data]" }
 
         println("Enter the gender (M, F):")
-        val genre = readln().run {
+        val gender = readln().run {
             if (!this.matches(genreRegex)) {
                 println("Bad gender!")
             }
 
-            Genre.fromString(this)
+            Gender.fromString(this)
         }
 
         println("Enter the number:")
@@ -80,7 +80,7 @@ class Contacts {
             phoneNumber = "[no number]"
         }
 
-        contacts.add(Person(name, phoneNumber, surname, birthDate, genre))
+        contacts.add(Person(name, phoneNumber, surname, birthDate, gender))
 
         println("The record added.")
     }
@@ -165,7 +165,7 @@ class Contacts {
             "surname" -> contact.setSurname(newValue)
             "number" -> contact.setPhoneNumber(newValue)
             "birth" -> contact.setBirthDate(newValue)
-            "genre" -> contact.setGenre(Genre.fromString(newValue))
+            "gender" -> contact.setGenre(Gender.fromString(newValue))
         }
 
         println("The record updated!")
@@ -176,13 +176,13 @@ class Contacts {
     }
 
     fun listContacts() {
-        if (contacts.isEmpty()) {
-            println("No records to list!")
-            return
-        }
-
         contacts.forEachIndexed { index, contact ->
-            println("${index + 1}. $contact.name")
+            if (contact.isPerson()) {
+                val person = contact as Person
+                println("${index + 1}. ${person.getName()} ${person.getSurname()}")
+            } else {
+                println("${index + 1}. ${contact.getName()}")
+            }
         }
     }
 

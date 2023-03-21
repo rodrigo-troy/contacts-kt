@@ -13,7 +13,7 @@ open class Contact(
     private val simpleTimeFormat = SimpleDateFormat("HH:mm")
     private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
 
-    fun getName(): String {
+    open fun getName(): String {
         return name
     }
 

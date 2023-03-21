@@ -26,6 +26,6 @@ class Organization(
                 "Address: $address\n" +
                 "Number: ${getPhoneNumber()}\n" +
                 "Time created: ${getCreationDate()}\n" +
-                "Time last edit: ${getEditDate()}\n"
+                "Time last edit: ${getEditDate()}"
     }
 }
