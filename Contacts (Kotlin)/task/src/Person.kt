@@ -9,6 +9,45 @@ $ Project: Contacts (Kotlin)
  */
 class Person(
     name: String,
-    surname: String,
-    phoneNumber: String = ""
-) : Contact(name, surname, phoneNumber, ContactType.PERSON)
+    phoneNumber: String = "",
+    private var surname: String = "",
+    private var birthDate: String = "",
+    private var genre: Genre = Genre.UNKNOWN
+) : Contact(name, phoneNumber, ContactType.PERSON) {
+
+    fun setSurname(newSurname: String) {
+        surname = newSurname.ifEmpty {
+            "[no number]"
+        }
+    }
+
+    fun getSurname(): String {
+        return surname
+    }
+
+    fun getBirthDate(): String {
+        return birthDate
+    }
+
+    fun setBirthDate(newBirthDate: String) {
+        birthDate = newBirthDate
+    }
+
+    fun getGenre(): Genre {
+        return genre
+    }
+
+    fun setGenre(newGenre: Genre) {
+        genre = newGenre
+    }
+
+    override fun toString(): String {
+        return "Name: ${getName()}\n" +
+                "Surname: $surname\n" +
+                "Birth date: $birthDate\n" +
+                "Genre: ${genre.value}\n" +
+                "Number: ${getPhoneNumber()}\n" +
+                "Time created: ${getCreationDate()}\n" +
+                "Time last edit: ${getEditDate()}"
+    }
+}
