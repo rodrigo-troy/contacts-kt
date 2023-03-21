@@ -3,7 +3,7 @@ package contacts
 import kotlinx.datetime.Clock
 import java.text.SimpleDateFormat
 
-open class Contact(
+abstract class Contact(
     private var name: String,
     private var phoneNumber: String = "",
     private val type: ContactType = ContactType.UNKNOWN
