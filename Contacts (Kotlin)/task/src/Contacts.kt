@@ -177,12 +177,7 @@ class Contacts {
 
     fun listContacts() {
         contacts.forEachIndexed { index, contact ->
-            if (contact.isPerson()) {
-                val person = contact as Person
-                println("${index + 1}. ${person.getName()} ${person.getSurname()}")
-            } else {
-                println("${index + 1}. ${contact.getName()}")
-            }
+            println("${index + 1}. ${contact.getListName()}")
         }
     }
 

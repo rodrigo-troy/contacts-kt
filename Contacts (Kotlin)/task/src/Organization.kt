@@ -10,21 +10,32 @@ $ Project: Contacts (Kotlin)
 class Organization(
     name: String,
     phoneNumber: String = "",
-    private var address: String = ""
+    address: String = ""
 ) : Contact(name, phoneNumber, ContactType.ORGANIZATION) {
-
-    fun getAddress(): String {
-        return address
+    init {
+        setFieldValue(Field.ADDRESS, address)
     }
 
-    fun setAddress(newAddress: String) {
-        address = newAddress
+    override fun getFields(): List<Field> {
+        return properties.keys.toList() + Field.ADDRESS
+    }
+
+    override fun getFieldValue(field: Field): String {
+        return properties.getOrDefault(field, "")
+    }
+
+    override fun setFieldValue(field: Field, value: String) {
+        properties[field] = value
+    }
+
+    override fun getListName(): String {
+        return getFieldValue(Field.NAME)
     }
 
     override fun toString(): String {
-        return "Organization name: ${getName()}\n" +
-                "Address: $address\n" +
-                "Number: ${getPhoneNumber()}\n" +
+        return "Organization name: ${getFieldValue(Field.NAME)}\n" +
+                "Address: ${getFieldValue(Field.ADDRESS)}\n" +
+                "Number: ${getFieldValue(Field.PHONE_NUMBER)}\n" +
                 "Time created: ${getCreationDate()}\n" +
                 "Time last edit: ${getEditDate()}"
     }
