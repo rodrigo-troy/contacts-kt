@@ -1,7 +1,6 @@
 package contacts
 
 import kotlinx.datetime.Instant
-import java.text.SimpleDateFormat
 
 /**
  * Created with IntelliJ IDEA.
@@ -54,9 +53,6 @@ class Organization(
 
     companion object {
         fun fromData(data: ContactData): Organization {
-            val simpleTimeFormat = SimpleDateFormat("HH:mm")
-            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
-
             return Organization(
                 name = data.name,
                 phoneNumber = data.phoneNumber,
