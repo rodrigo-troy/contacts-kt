@@ -33,7 +33,7 @@ class Person(
     }
 
     override fun getListName(): String {
-        return "${getFieldValue(Field.SURNAME)} ${getFieldValue(Field.NAME)}"
+        return "${getFieldValue(Field.NAME)} ${getFieldValue(Field.SURNAME)} "
     }
 
     override fun toString(): String {
