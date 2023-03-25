@@ -13,6 +13,7 @@ enum class Field(val value: String) {
     ADDRESS("address"),
     BIRTH_DATE("birth"),
     PHONE_NUMBER("number"),
+    GENDER("gender"),
     UNKNOWN("[no data]");
 
     companion object {

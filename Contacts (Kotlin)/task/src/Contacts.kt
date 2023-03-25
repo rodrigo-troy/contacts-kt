@@ -18,72 +18,15 @@ class Contacts {
     private val genreRegex = Regex("^(\\t|\\s)*[MF]\$")
     private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
 
+    var mode: Mode = Mode.MENU
+
+
     fun addContact() {
         println("Enter the type (person, organization):")
         val type = readln().trim()
 
-        when (type) {
-            "person" -> addPerson()
-            "organization" -> addOrganization()
-            else -> println("Unknown type")
-        }
     }
 
-    private fun addOrganization() {
-        println("Enter the organization name:")
-        val name = readln()
-
-        println("Enter the address:")
-        val address = readln()
-
-        println("Enter the number:")
-        var phoneNumber = readln()
-
-        if (!phoneNumberRegex.matches(phoneNumber)) {
-            println("Wrong number format!")
-            phoneNumber = "[no number]"
-        }
-
-        contacts.add(Organization(name, phoneNumber, address))
-
-        println("The record added.")
-    }
-
-    private fun addPerson() {
-        println("Enter the name:")
-        val name = readln()
-
-        println("Enter the surname:")
-        val surname = readln()
-
-        println("Enter the birth date:")
-        val birthDate = readln().apply {
-            if (!dateIsValid(this)) {
-                println("Bad birth date!")
-            }
-        }.ifEmpty { "[no data]" }
-
-        println("Enter the gender (M, F):")
-        val gender = readln().run {
-            if (!this.matches(genreRegex)) {
-                println("Bad gender!")
-            }
-
-            Gender.fromString(this)
-        }
-
-        println("Enter the number:")
-        var phoneNumber = readln()
-
-        if (!phoneNumberRegex.matches(phoneNumber)) {
-            println("Wrong number format!")
-            phoneNumber = "[no number]"
-        }
-
-        contacts.add(Person(name, phoneNumber, surname, birthDate, gender))
-
-        println("The record added.")
-    }
 
     fun removeContact() {
         if (contacts.isEmpty()) {
@@ -111,64 +54,18 @@ class Contacts {
         println("Select a record:")
         val index = readln().toInt() - 1
 
-        when (contacts[index].getType()) {
-            ContactType.PERSON -> editPerson(index)
-            ContactType.ORGANIZATION -> editOrganization(index)
-            else -> println("Unknown type")
-        }
-    }
+        val contact = contacts[index]
 
-    private fun editOrganization(index: Int) {
-        println("Select a field (name, address, number):")
-        val field = readln().trim()
+        println("Select a field (${contact.getFields()}]):")
+        val field = Field.fromString(readln())
 
-        println("Enter ${field}:")
-        var newValue = readln().trim()
+        println("Enter ${field.value}:")
+        val value = readln()
 
-        if (field == "number" && !phoneNumberRegex.matches(newValue)) {
-            println("Wrong number format!")
-            newValue = "[no number]"
-        }
+        contact.setFieldValue(field, value);
 
-        val contact = contacts[index] as Organization
-
-        when (field) {
-            "name" -> contact.setName(newValue)
-            "address" -> contact.setAddress(newValue)
-            "number" -> contact.setPhoneNumber(newValue)
-        }
-
-        println("The record updated!")
-    }
-
-    private fun editPerson(index: Int) {
-        println("Select a field (name, surname, birth, gender, number):")
-        val field = readln().trim()
-
-        println("Enter ${field}:")
-        var newValue = readln().trim()
-
-        if (field == "number" && !phoneNumberRegex.matches(newValue)) {
-            println("Wrong number format!")
-            newValue = "[no number]"
-        }
-
-        if (field == "birth" && !dateIsValid(newValue)) {
-            println("Bad birth date!")
-            newValue = "[no data]"
-        }
-
-        val contact = contacts[index] as Person
-
-        when (field) {
-            "name" -> contact.setName(newValue)
-            "surname" -> contact.setSurname(newValue)
-            "number" -> contact.setPhoneNumber(newValue)
-            "birth" -> contact.setBirthDate(newValue)
-            "gender" -> contact.setGenre(Gender.fromString(newValue))
-        }
-
-        println("The record updated!")
+        println("Saved")
+        println(contact)
     }
 
     fun countContacts() {
@@ -192,6 +89,15 @@ class Contacts {
         }
     }
 
+    fun infoContact(index: Int) {
+        if (contacts.isEmpty()) {
+            println("No records to list!")
+            return
+        }
+
+        println(contacts[index])
+    }
+
     fun infoContact() {
         if (contacts.isEmpty()) {
             println("No records to list!")
@@ -204,5 +110,21 @@ class Contacts {
         val index = readln().toInt() - 1
 
         println(contacts[index])
+    }
+
+    fun searchContacts() {
+        if (contacts.isEmpty()) {
+            println("No records to search!")
+            return
+        }
+
+        println("Enter search query:")
+        val query = readln().trim()
+
+        contacts.forEachIndexed { index, contact ->
+            if (contact.getListName().contains(query, true)) {
+                println("${index + 1}. ${contact.getListName()}")
+            }
+        }
     }
 }

@@ -10,43 +10,35 @@ $ Project: Contacts (Kotlin)
 class Person(
     name: String,
     phoneNumber: String = "",
-    private var surname: String = "",
-    private var birthDate: String = "",
-    private var gender: Gender = Gender.UNKNOWN
+    surname: String = "",
+    birthDate: String = "",
+    gender: Gender = Gender.UNKNOWN
 ) : Contact(name, phoneNumber, ContactType.PERSON) {
-
-    fun setSurname(newSurname: String) {
-        surname = newSurname.ifEmpty {
-            "[no number]"
-        }
+    init {
+        setFieldValue(Field.SURNAME, surname)
+        setFieldValue(Field.BIRTH_DATE, birthDate)
+        setFieldValue(Field.GENDER, gender.value)
     }
 
-    fun getSurname(): String {
-        return surname
+    override fun getFields(): List<Field> {
+        return properties.keys.toList() + listOf(Field.SURNAME, Field.BIRTH_DATE, Field.GENDER)
     }
 
-    fun getBirthDate(): String {
-        return birthDate
+
+    override fun setFieldValue(field: Field, value: String) {
+        properties[field] = value
     }
 
-    fun setBirthDate(newBirthDate: String) {
-        birthDate = newBirthDate
-    }
-
-    fun getGenre(): Gender {
-        return gender
-    }
-
-    fun setGenre(newGender: Gender) {
-        gender = newGender
+    override fun getListName(): String {
+        return "${getFieldValue(Field.SURNAME)} ${getFieldValue(Field.NAME)}"
     }
 
     override fun toString(): String {
-        return "Name: ${getName()}\n" +
-                "Surname: $surname\n" +
-                "Birth date: $birthDate\n" +
-                "Gender: ${gender.value}\n" +
-                "Number: ${getPhoneNumber()}\n" +
+        return "Name: ${getFieldValue(Field.NAME)}\n" +
+                "Surname: ${getFieldValue(Field.SURNAME)}\n" +
+                "Birth date: ${getFieldValue(Field.BIRTH_DATE)}\n" +
+                "Gender: ${getFieldValue(Field.GENDER)}\n" +
+                "Number: ${getFieldValue(Field.PHONE_NUMBER)}\n" +
                 "Time created: ${getCreationDate()}\n" +
                 "Time last edit: ${getEditDate()}"
     }

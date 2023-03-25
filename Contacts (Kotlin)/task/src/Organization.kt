@@ -20,10 +20,6 @@ class Organization(
         return properties.keys.toList() + Field.ADDRESS
     }
 
-    override fun getFieldValue(field: Field): String {
-        return properties.getOrDefault(field, "")
-    }
-
     override fun setFieldValue(field: Field, value: String) {
         properties[field] = value
     }

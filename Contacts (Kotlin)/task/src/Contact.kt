@@ -30,7 +30,9 @@ abstract class Contact(
 
     abstract fun getFields(): List<Field>
 
-    abstract fun getFieldValue(field: Field): String
+    fun getFieldValue(field: Field): String {
+        return properties.getOrDefault(field, "")
+    }
 
     abstract fun setFieldValue(field: Field, value: String)
 
