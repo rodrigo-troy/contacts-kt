@@ -1,32 +1,20 @@
 package contacts
 
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import java.text.SimpleDateFormat
 
 abstract class Contact(
     name: String,
     phoneNumber: String = "",
+    protected var timeCreated: Instant = Clock.System.now(),
+    protected var timeLastEdit: Instant = timeCreated,
     private val type: ContactType = ContactType.UNKNOWN
 ) {
     protected val properties: MutableMap<Field, String> =
         mutableMapOf(Field.NAME to name, Field.PHONE_NUMBER to phoneNumber)
-    private val timeCreated = Clock.System.now()
-    private var timeLastEdit = timeCreated
     private val simpleTimeFormat = SimpleDateFormat("HH:mm")
     private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
-
-    var name: String
-        get() = properties[Field.NAME] ?: ""
-        set(value) {
-            properties[Field.NAME] = value
-        }
-
-    var phoneNumber: String
-        get() = properties[Field.PHONE_NUMBER] ?: ""
-        set(value) {
-            properties[Field.PHONE_NUMBER] = value
-        }
-
 
     abstract fun getFields(): List<Field>
 
@@ -37,6 +25,8 @@ abstract class Contact(
     abstract fun setFieldValue(field: Field, value: String)
 
     abstract fun getListName(): String
+
+    abstract fun toData(): ContactData
 
     fun isPerson(): Boolean {
         return type == ContactType.PERSON

@@ -1,5 +1,8 @@
 package contacts
 
+import kotlinx.datetime.Instant
+import java.text.SimpleDateFormat
+
 /**
  * Created with IntelliJ IDEA.
 $ Project: Contacts (Kotlin)
@@ -10,8 +13,10 @@ $ Project: Contacts (Kotlin)
 class Organization(
     name: String,
     phoneNumber: String = "",
-    address: String = ""
-) : Contact(name, phoneNumber, ContactType.ORGANIZATION) {
+    address: String = "",
+    timeCreated: Instant,
+    timeLastEdit: Instant
+) : Contact(name, phoneNumber, timeCreated, timeLastEdit, ContactType.ORGANIZATION) {
     init {
         setFieldValue(Field.ADDRESS, address)
     }
@@ -34,5 +39,36 @@ class Organization(
                 "Number: ${getFieldValue(Field.PHONE_NUMBER)}\n" +
                 "Time created: ${getCreationDate()}\n" +
                 "Time last edit: ${getEditDate()}"
+    }
+
+    override fun toData(): ContactData {
+        return ContactData(
+            name = getFieldValue(Field.NAME),
+            phoneNumber = getFieldValue(Field.PHONE_NUMBER),
+            address = getFieldValue(Field.ADDRESS)
+        )
+    }
+
+    companion object {
+        fun fromData(data: ContactData): Organization {
+            val simpleTimeFormat = SimpleDateFormat("HH:mm")
+            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+
+            return Organization(
+                name = data.name,
+                phoneNumber = data.phoneNumber,
+                address = data.address,
+                timeCreated = Instant.fromEpochMilliseconds(
+                    simpleDateFormat.parse(data.timeCreated).time + simpleTimeFormat.parse(
+                        data.timeCreated
+                    ).time
+                ),
+                timeLastEdit = Instant.fromEpochMilliseconds(
+                    simpleDateFormat.parse(data.timeLastEdit).time + simpleTimeFormat.parse(
+                        data.timeLastEdit
+                    ).time
+                )
+            )
+        }
     }
 }

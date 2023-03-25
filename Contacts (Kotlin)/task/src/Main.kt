@@ -4,17 +4,33 @@ fun main() {
     val contacts = Contacts()
 
     while (true) {
-        println("[${contacts.mode}] Enter action (${contacts.mode.options.joinToString(separator = ", ") { it.value }}):")
+        println(
+            "[${
+                contacts.mode.toString().lowercase()
+            }] Enter action (${contacts.mode.options.joinToString(separator = ", ") { it.value }}):"
+        )
         val option = readln()
 
         when (contacts.mode) {
             Mode.MENU -> {
                 when (Option.fromString(option)) {
                     Option.ADD -> contacts.addContact()
-                    Option.LIST -> contacts.listContacts()
-                    Option.SEARCH -> contacts.searchContacts()
+                    Option.LIST -> {
+                        contacts.listContacts()
+                        contacts.mode = Mode.LIST
+                    }
+
+                    Option.SEARCH -> {
+                        contacts.searchContacts()
+                        contacts.mode = Mode.SEARCH
+                    }
+
                     Option.COUNT -> contacts.countContacts()
-                    Option.EXIT -> return
+                    Option.EXIT -> {
+                        contacts.save()
+                        return
+                    }
+
                     else -> println("Unknown option")
                 }
             }

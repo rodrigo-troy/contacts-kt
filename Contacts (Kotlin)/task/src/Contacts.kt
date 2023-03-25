@@ -1,7 +1,14 @@
 package contacts
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.datetime.Clock
+import java.io.File
 import java.text.ParseException
 import java.text.SimpleDateFormat
+
+private const val FILE_NAME = "contacts.json"
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,13 +27,105 @@ class Contacts {
 
     var mode: Mode = Mode.MENU
 
+    init {
+        val file = File(FILE_NAME)
+        if (file.exists() && file.length() > 0) {
+            val json = file.readText()
+
+            val moshi = Moshi.Builder()
+                .addLast(KotlinJsonAdapterFactory())
+                .build()
+
+            val type = Types.newParameterizedType(
+                List::class.java,
+                ContactData::class.java
+            )
+
+            val listAdapter = moshi.adapter<List<ContactData?>>(type)
+            val contactList = listAdapter.fromJson(json)
+
+            contactList?.forEach { contact ->
+                if (contact != null) {
+                    when (contact.type) {
+                        ContactType.PERSON -> Person.fromData(contact)
+                        ContactType.ORGANIZATION -> Organization.fromData(contact)
+                        else -> null
+                    }?.let { contacts.add(it) }
+                }
+            }
+        } else {
+            file.createNewFile()
+        }
+    }
 
     fun addContact() {
         println("Enter the type (person, organization):")
         val type = readln().trim()
 
+        if (type == "person") {
+            addPerson()
+        } else if (type == "organization") {
+            addOrganization()
+        } else {
+            println("Unknown type")
+        }
     }
 
+    private fun addOrganization() {
+        println("Enter the organization name:")
+        val name = readln()
+
+        println("Enter the address:")
+        val address = readln()
+
+        println("Enter the number:")
+        var phoneNumber = readln()
+
+        if (!phoneNumberRegex.matches(phoneNumber)) {
+            println("Wrong number format!")
+            phoneNumber = "[no number]"
+        }
+
+        contacts.add(Organization(name, phoneNumber, address, Clock.System.now(), Clock.System.now()))
+
+        println("The record added.")
+    }
+
+    private fun addPerson() {
+        println("Enter the name:")
+        val name = readln()
+
+        println("Enter the surname:")
+        val surname = readln()
+
+        println("Enter the birth date:")
+        val birthDate = readln().apply {
+            if (!dateIsValid(this)) {
+                println("Bad birth date!")
+            }
+        }.ifEmpty { "[no data]" }
+
+        println("Enter the gender (M, F):")
+        val gender = readln().run {
+            if (!this.matches(genreRegex)) {
+                println("Bad gender!")
+            }
+
+            Gender.fromString(this)
+        }
+
+        println("Enter the number:")
+        var phoneNumber = readln()
+
+        if (!phoneNumberRegex.matches(phoneNumber)) {
+            println("Wrong number format!")
+            phoneNumber = "[no number]"
+        }
+
+        contacts.add(Person(name, phoneNumber, surname, birthDate, gender, Clock.System.now(), Clock.System.now()))
+
+        println("The record added.")
+    }
 
     fun removeContact() {
         if (contacts.isEmpty()) {
@@ -63,6 +162,7 @@ class Contacts {
         val value = readln()
 
         contact.setFieldValue(field, value);
+        contact.setEditDate()
 
         println("Saved")
         println(contact)
@@ -98,20 +198,6 @@ class Contacts {
         println(contacts[index])
     }
 
-    fun infoContact() {
-        if (contacts.isEmpty()) {
-            println("No records to list!")
-            return
-        }
-
-        listContacts()
-
-        println("Enter index to show info:")
-        val index = readln().toInt() - 1
-
-        println(contacts[index])
-    }
-
     fun searchContacts() {
         if (contacts.isEmpty()) {
             println("No records to search!")
@@ -126,5 +212,23 @@ class Contacts {
                 println("${index + 1}. ${contact.getListName()}")
             }
         }
+    }
+
+    fun save() {
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+
+        val type = Types.newParameterizedType(
+            List::class.java,
+            ContactData::class.java
+        )
+
+        val listAdapter = moshi.adapter<List<ContactData?>>(type)
+        val file = File(FILE_NAME)
+
+        val contactList = contacts.map { it.toData() }
+
+        file.appendText(listAdapter.toJson(contactList))
     }
 }

@@ -24,7 +24,7 @@ enum class Option(val value: String) {
 
     companion object {
         fun fromString(value: String): Option {
-            return values().firstOrNull { it.value == value.trim().uppercase() } ?: UNKNOWN
+            return values().firstOrNull { it.value == value.trim().lowercase() } ?: UNKNOWN
         }
     }
 }

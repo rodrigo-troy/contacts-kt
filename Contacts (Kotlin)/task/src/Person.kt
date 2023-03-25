@@ -1,5 +1,7 @@
 package contacts
 
+import kotlinx.datetime.Instant
+
 /**
  * Created with IntelliJ IDEA.
 $ Project: Contacts (Kotlin)
@@ -12,8 +14,10 @@ class Person(
     phoneNumber: String = "",
     surname: String = "",
     birthDate: String = "",
-    gender: Gender = Gender.UNKNOWN
-) : Contact(name, phoneNumber, ContactType.PERSON) {
+    gender: Gender = Gender.UNKNOWN,
+    timeCreated: Instant,
+    timeLastEdit: Instant
+) : Contact(name, phoneNumber, timeCreated, timeLastEdit, ContactType.PERSON) {
     init {
         setFieldValue(Field.SURNAME, surname)
         setFieldValue(Field.BIRTH_DATE, birthDate)
@@ -23,7 +27,6 @@ class Person(
     override fun getFields(): List<Field> {
         return properties.keys.toList() + listOf(Field.SURNAME, Field.BIRTH_DATE, Field.GENDER)
     }
-
 
     override fun setFieldValue(field: Field, value: String) {
         properties[field] = value
@@ -41,5 +44,32 @@ class Person(
                 "Number: ${getFieldValue(Field.PHONE_NUMBER)}\n" +
                 "Time created: ${getCreationDate()}\n" +
                 "Time last edit: ${getEditDate()}"
+    }
+
+    override fun toData(): ContactData {
+        return ContactData(
+            type = ContactType.PERSON,
+            name = getFieldValue(Field.NAME),
+            phoneNumber = getFieldValue(Field.PHONE_NUMBER),
+            surname = getFieldValue(Field.SURNAME),
+            birthDate = getFieldValue(Field.BIRTH_DATE),
+            gender = getFieldValue(Field.GENDER),
+            timeCreated = timeCreated.toString(),
+            timeLastEdit = timeLastEdit.toString()
+        )
+    }
+
+    companion object {
+        fun fromData(data: ContactData): Person {
+            return Person(
+                name = data.name,
+                phoneNumber = data.phoneNumber,
+                surname = data.surname,
+                birthDate = data.birthDate,
+                gender = Gender.fromString(data.gender),
+                timeCreated = Instant.parse(data.timeCreated),
+                timeLastEdit = Instant.parse(data.timeLastEdit)
+            )
+        }
     }
 }
