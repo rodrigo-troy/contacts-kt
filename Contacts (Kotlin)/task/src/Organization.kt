@@ -43,9 +43,12 @@ class Organization(
 
     override fun toData(): ContactData {
         return ContactData(
+            type = ContactType.ORGANIZATION,
             name = getFieldValue(Field.NAME),
             phoneNumber = getFieldValue(Field.PHONE_NUMBER),
-            address = getFieldValue(Field.ADDRESS)
+            address = getFieldValue(Field.ADDRESS),
+            timeCreated = timeCreated.toString(),
+            timeLastEdit = timeLastEdit.toString()
         )
     }
 
@@ -58,16 +61,8 @@ class Organization(
                 name = data.name,
                 phoneNumber = data.phoneNumber,
                 address = data.address,
-                timeCreated = Instant.fromEpochMilliseconds(
-                    simpleDateFormat.parse(data.timeCreated).time + simpleTimeFormat.parse(
-                        data.timeCreated
-                    ).time
-                ),
-                timeLastEdit = Instant.fromEpochMilliseconds(
-                    simpleDateFormat.parse(data.timeLastEdit).time + simpleTimeFormat.parse(
-                        data.timeLastEdit
-                    ).time
-                )
+                timeCreated = Instant.parse(data.timeCreated),
+                timeLastEdit = Instant.parse(data.timeLastEdit)
             )
         }
     }

@@ -264,6 +264,6 @@ class Contacts {
 
         val contactList = contacts.map { it.toData() }
 
-        file.appendText(listAdapter.toJson(contactList))
+        file.writeText(listAdapter.toJson(contactList))
     }
 }
