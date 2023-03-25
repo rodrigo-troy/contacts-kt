@@ -18,7 +18,7 @@ enum class Field(val value: String) {
 
     companion object {
         fun fromString(value: String): Field {
-            return Field.values().firstOrNull { it.value == value.trim().uppercase() } ?: Field.UNKNOWN
+            return Field.values().firstOrNull { it.value == value.trim().lowercase() } ?: Field.UNKNOWN
         }
     }
 }

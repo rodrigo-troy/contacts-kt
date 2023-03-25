@@ -59,7 +59,7 @@ fun main() {
             Mode.RECORD -> {
                 when (Option.fromString(option)) {
                     Option.DELETE -> contacts.removeContact()
-                    Option.EDIT -> contacts.editContact()
+                    Option.EDIT -> contacts.editContact(contacts.selectedContact)
                     Option.MENU -> contacts.mode = Mode.MENU
                     else -> println("Unknown option")
                 }

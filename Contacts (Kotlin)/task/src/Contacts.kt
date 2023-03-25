@@ -24,6 +24,7 @@ class Contacts {
     private val numberRegex = Regex("\\+?\\d+")
     private val genreRegex = Regex("^(\\t|\\s)*[MF]\$")
     private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+    var selectedContact: Contact? = null
 
     var mode: Mode = Mode.MENU
 
@@ -31,6 +32,8 @@ class Contacts {
         val file = File(FILE_NAME)
         if (file.exists() && file.length() > 0) {
             val json = file.readText()
+
+            //setLenient(false) is important to avoid parsing errors
 
             val moshi = Moshi.Builder()
                 .addLast(KotlinJsonAdapterFactory())
@@ -42,7 +45,7 @@ class Contacts {
             )
 
             val listAdapter = moshi.adapter<List<ContactData?>>(type)
-            val contactList = listAdapter.fromJson(json)
+            val contactList = listAdapter.lenient().fromJson(json)
 
             contactList?.forEach { contact ->
                 if (contact != null) {
@@ -143,15 +146,11 @@ class Contacts {
         println("The record removed!")
     }
 
-    fun editContact() {
+    fun editContact(index: Int) {
         if (contacts.isEmpty()) {
             println("No records to edit!")
             return
         }
-
-        listContacts()
-        println("Select a record:")
-        val index = readln().toInt() - 1
 
         val contact = contacts[index]
 
@@ -166,6 +165,43 @@ class Contacts {
 
         println("Saved")
         println(contact)
+    }
+
+    fun editContact(contact: Contact?) {
+        if (contact == null) {
+            println("No records to edit!")
+            return
+        }
+
+        if (contacts.isEmpty()) {
+            println("No records to edit!")
+            return
+        }
+
+        println("Select a field (${contact.getFields()}]):")
+        val field = Field.fromString(readln())
+
+        println("Enter ${field.value}:")
+        val value = readln()
+
+        contact.setFieldValue(field, value);
+        contact.setEditDate()
+
+        println("Saved")
+        println(contact)
+    }
+
+    fun editContact() {
+        if (contacts.isEmpty()) {
+            println("No records to edit!")
+            return
+        }
+
+        listContacts()
+        println("Select a record:")
+        val index = readln().toInt() - 1
+
+        editContact(contacts[index])
     }
 
     fun countContacts() {
@@ -195,20 +231,19 @@ class Contacts {
             return
         }
 
-        println(contacts[index])
+        selectedContact = contacts[index]
+        println(selectedContact)
     }
 
+    // implement search functionality. For this, you can append all of the values from all of the properties and check if this string contains a search request. It should support regular expressions, too! And, of course, it should be case insensitive.
     fun searchContacts() {
-        if (contacts.isEmpty()) {
-            println("No records to search!")
-            return
-        }
-
         println("Enter search query:")
-        val query = readln().trim()
+        val query = readln()
+
+        val regex = Regex(query, RegexOption.IGNORE_CASE)
 
         contacts.forEachIndexed { index, contact ->
-            if (contact.getListName().contains(query, true)) {
+            if (regex.containsMatchIn(contact.toString())) {
                 println("${index + 1}. ${contact.getListName()}")
             }
         }

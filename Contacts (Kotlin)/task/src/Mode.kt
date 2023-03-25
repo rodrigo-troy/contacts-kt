@@ -26,9 +26,9 @@ enum class Mode(val options: List<Option>) {
     ),
     SEARCH(
         listOf(
+            Option.NUMBER,
             Option.BACK,
-            Option.AGAIN,
-            Option.NUMBER
+            Option.AGAIN
         )
     ),
     LIST(
