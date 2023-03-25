@@ -8,8 +8,6 @@ import java.io.File
 import java.text.ParseException
 import java.text.SimpleDateFormat
 
-private const val FILE_NAME = "contacts.json"
-
 /**
  * Created with IntelliJ IDEA.
 $ Project: Contacts (Kotlin)
@@ -17,7 +15,7 @@ $ Project: Contacts (Kotlin)
  * Date: 18-03-23
  * Time: 19:48
  */
-class Contacts {
+class Contacts(private var inputfile: String) {
     private val contacts = mutableListOf<Contact>()
     private val phoneNumberRegex =
         "\\+?((\\([0-9A-Za-z]+\\)|[0-9A-Za-z]+)|([0-9A-Za-z]+[ -]\\([0-9A-Za-z]{2,}\\))|[0-9A-Za-z]+[ -][0-9A-Za-z]{2,})([ -][0-9A-Za-z]{2,}[ -]?)*".toRegex()
@@ -29,35 +27,37 @@ class Contacts {
     var mode: Mode = Mode.MENU
 
     init {
-        val file = File(FILE_NAME)
-        if (file.exists() && file.length() > 0) {
-            val json = file.readText()
+        if (inputfile.isNotEmpty()) {
+            val file = File(inputfile)
+            if (file.exists() && file.length() > 0) {
+                val json = file.readText()
 
-            //setLenient(false) is important to avoid parsing errors
+                //setLenient(false) is important to avoid parsing errors
 
-            val moshi = Moshi.Builder()
-                .addLast(KotlinJsonAdapterFactory())
-                .build()
+                val moshi = Moshi.Builder()
+                    .addLast(KotlinJsonAdapterFactory())
+                    .build()
 
-            val type = Types.newParameterizedType(
-                List::class.java,
-                ContactData::class.java
-            )
+                val type = Types.newParameterizedType(
+                    List::class.java,
+                    ContactData::class.java
+                )
 
-            val listAdapter = moshi.adapter<List<ContactData?>>(type)
-            val contactList = listAdapter.lenient().fromJson(json)
+                val listAdapter = moshi.adapter<List<ContactData?>>(type)
+                val contactList = listAdapter.fromJson(json)
 
-            contactList?.forEach { contact ->
-                if (contact != null) {
-                    when (contact.type) {
-                        ContactType.PERSON -> Person.fromData(contact)
-                        ContactType.ORGANIZATION -> Organization.fromData(contact)
-                        else -> null
-                    }?.let { contacts.add(it) }
+                contactList?.forEach { contact ->
+                    if (contact != null) {
+                        when (contact.type) {
+                            ContactType.PERSON -> Person.fromData(contact)
+                            ContactType.ORGANIZATION -> Organization.fromData(contact)
+                            else -> null
+                        }?.let { contacts.add(it) }
+                    }
                 }
+            } else {
+                file.createNewFile()
             }
-        } else {
-            file.createNewFile()
         }
     }
 
@@ -146,27 +146,6 @@ class Contacts {
         println("The record removed!")
     }
 
-    fun editContact(index: Int) {
-        if (contacts.isEmpty()) {
-            println("No records to edit!")
-            return
-        }
-
-        val contact = contacts[index]
-
-        println("Select a field (${contact.getFields()}]):")
-        val field = Field.fromString(readln())
-
-        println("Enter ${field.value}:")
-        val value = readln()
-
-        contact.setFieldValue(field, value);
-        contact.setEditDate()
-
-        println("Saved")
-        println(contact)
-    }
-
     fun editContact(contact: Contact?) {
         if (contact == null) {
             println("No records to edit!")
@@ -191,24 +170,16 @@ class Contacts {
         println(contact)
     }
 
-    fun editContact() {
-        if (contacts.isEmpty()) {
-            println("No records to edit!")
-            return
-        }
-
-        listContacts()
-        println("Select a record:")
-        val index = readln().toInt() - 1
-
-        editContact(contacts[index])
-    }
-
     fun countContacts() {
         println("The Phone Book has ${contacts.size} records.")
     }
 
     fun listContacts() {
+        if (contacts.isEmpty()) {
+            println("No records to list!")
+            return
+        }
+
         contacts.forEachIndexed { index, contact ->
             println("${index + 1}. ${contact.getListName()}")
         }
@@ -250,6 +221,10 @@ class Contacts {
     }
 
     fun save() {
+        if (inputfile.isEmpty()) {
+            return
+        }
+
         val moshi = Moshi.Builder()
             .addLast(KotlinJsonAdapterFactory())
             .build()
@@ -260,7 +235,7 @@ class Contacts {
         )
 
         val listAdapter = moshi.adapter<List<ContactData?>>(type)
-        val file = File(FILE_NAME)
+        val file = File(inputfile)
 
         val contactList = contacts.map { it.toData() }
 

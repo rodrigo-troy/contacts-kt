@@ -1,7 +1,7 @@
 package contacts
 
-fun main() {
-    val contacts = Contacts()
+fun main(args: Array<String>) {
+    val contacts = Contacts(if (args.isNotEmpty()) args[0] else "")
 
     while (true) {
         println(
